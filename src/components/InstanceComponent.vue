@@ -6,29 +6,29 @@
 import { eventBus } from "../main";
 export default {
   name: "InstanceComponent",
-  created() {
-    eventBus.$on("sayHello", fieldId => {
-      if (this.field.id === fieldId) {
-        console.log(
-          "hello my uid is: ",
-          this._uid,
-          " and my field.id is: ",
-          this.field.id
-        );
+  data() {
+    return {
+      callbackFn: fieldId => {
+        if (this.field.id === fieldId) {
+          console.log(
+            "hello my uid is: ",
+            this._uid,
+            " and my field.id is: ",
+            this.field.id
+          );
+        }
       }
-    });
+    }
+  },
+  created() {
+    eventBus.$on("sayHello", this.callbackFn);
   },
   props: {
     field: Object,
     color: String
   },
-  computed: {
-    inUse() {
-      return this.fields.filter(field => field.inUse === true);
-    },
-    notInUse() {
-      return this.fields.filter(field => field.inUse === false);
-    }
+  destroyed() {
+    eventBus.$off("sayHello", this.callbackFn);
   }
 };
 </script>
